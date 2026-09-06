@@ -4,6 +4,7 @@ import { Sidebar, type View } from "./components/Sidebar";
 import { EntryDetail } from "./components/EntryDetail";
 import { CodeBlock } from "./components/CodeBlock";
 import { MarkdownView } from "./components/MarkdownView";
+import { AiChat } from "./components/AiChat";
 
 const iconFor = (e: { kind: string; name: string; description: string }) =>
   e.kind === "callback" ? "cb" : "fn";
@@ -68,6 +69,15 @@ export default function App() {
             ))}
           </div>
         </div>
+      </Shell>
+    );
+  }
+
+  // ---------- AI chat ----------
+  if (view.type === "chat") {
+    return (
+      <Shell data={data} view={view} query={query} setQuery={setQuery} onNav={onNav} drawer={drawer} setDrawer={setDrawer}>
+        <AiChat />
       </Shell>
     );
   }

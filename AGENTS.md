@@ -9,9 +9,16 @@ no external credentials needed.
 ```bash
 docker compose -f docker-compose.base44.yml up -d   # serves on host port 3000
 ```
-- Uses the `node:22` image with the repo bind-mounted; Vite dev server (live reload) on container port 5173, mapped to host 3000.
-- `npm run dev` first runs `npm run build-data` (parses `docs/*.md` into `src/data/reference.json`), then starts Vite.
-- Health: `curl -sf http://localhost:3000/` returns the HTML shell.
+- Two services, both `node:22` with the repo bind-mounted:
+  - `web`: Vite dev server (live reload), container port 5173 → host 3000. `npm run dev` runs `build-data` then Vite.
+  - `api`: backend proxy (`server/index.mjs`) on port 8787. Holds the OpenRouter key (from `/run/base44/app.env`), injects the full API reference as system context, streams OpenRouter chat completions.
+- The Vite dev server proxies `/api/*` → `http://api:8787` (single-origin, no CORS issues).
+- Health: `curl -sf http://localhost:3000/` (web), `curl -sf http://localhost:3000/api/health` (api, reports model + key presence).
+
+## AI Chat
+- Secret `OPENROUTER_API_KEY` (required for chat; backend boots without it and chat returns 503).
+- Model fixed via compose env `OPENROUTER_MODEL=nvidia/nemotron-3-ultra-550b-a55b:free`.
+- `server/index.mjs` builds the system prompt from `src/data/reference.json` (all functions + callbacks + name samples).
 
 ## Data pipeline (important)
 - `docs/` holds the raw upstream markdown/txt docs downloaded from Bloxdy/code-api.

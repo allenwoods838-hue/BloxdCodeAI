@@ -2,6 +2,7 @@ import type { Reference } from "../data";
 
 export type View =
   | { type: "home" }
+  | { type: "chat" }
   | { type: "functions"; id?: string }
   | { type: "callbacks"; id?: string }
   | { type: "blocks" }
@@ -12,6 +13,7 @@ export type View =
 
 const NAV: { type: View["type"]; label: string; icon: string; countKey?: string }[] = [
   { type: "home", label: "Home", icon: "⌂" },
+  { type: "chat", label: "AI Chat", icon: "✦" },
   { type: "functions", label: "API Functions", icon: "ƒ", countKey: "functions" },
   { type: "callbacks", label: "Callbacks", icon: "↻", countKey: "callbacks" },
   { type: "blocks", label: "Block Names", icon: "▦", countKey: "blocks" },
